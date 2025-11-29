@@ -4,12 +4,12 @@ import React, { useState } from 'react';
   =========================================================================================
   🚨 INSTRUCTION FOR TEACHER (O'QITUVCHI UCHUN QO'LLANMA):
   
-  To make the Google Sheets submission work, you must create a Google Apps Script Web App.
-  (Google Sheetsga ma'lumot tushishi uchun quyidagi qadamlarni bajaring):
+  To make the Google Sheets submission work with DETAILED SCORES, you must update your Google Apps Script.
+  (Google Sheetsga barcha ballar detallari bilan tushishi uchun kodingizni yangilang):
 
   1. Open your Sheet: https://docs.google.com/spreadsheets/d/1_MWJyCVX4qL2dxhMyQsSbEenn1fvEWQpltmIXAFyK-Q/edit
   2. Go to: Extensions > Apps Script
-  3. Delete any code there and paste this:
+  3. Delete any code there and paste this NEW code:
 
      function doPost(e) {
        var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
@@ -17,7 +17,7 @@ import React, { useState } from 'react';
        
        // Create headers if new sheet
        if (sheet.getLastRow() === 0) {
-         sheet.appendRow(["Timestamp", "Student Name", "Project Title", "Project Link", "Quiz Link", "Reflection", "Action Plan", "Points", "Badge", "Submission ID"]);
+         sheet.appendRow(["Timestamp", "Student Name", "Project Title", "Project Link", "Quiz Link", "Reflection", "Action Plan", "Points", "Badge", "Submission ID", "Rubric Breakdown"]);
        }
        
        sheet.appendRow([
@@ -30,25 +30,41 @@ import React, { useState } from 'react';
          params.actionPlan,
          params.points,
          params.badge,
-         params.submissionId
+         params.submissionId,
+         params.rubricBreakdown // New column for detailed scores
        ]);
        
        return ContentService.createTextOutput("Success");
      }
 
-  4. Click "Deploy" > "New deployment"
-  5. Select type: "Web app"
-  6. Configuration:
-     - Description: "WebQuest Submission"
-     - Execute as: "Me"
-     - Who has access: "Anyone" (IMPORTANT!)
-  7. Click "Deploy"
-  8. Copy the "Web app URL" and paste it below into the variable GOOGLE_SCRIPT_URL.
+     function doGet(e) {
+       var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+       var data = sheet.getDataRange().getValues();
+       
+       if (data.length <= 1) {
+         return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
+       }
+
+       var headers = data[0];
+       var jsonData = [];
+       
+       for (var i = 1; i < data.length; i++) {
+         var row = {};
+         for (var j = 0; j < headers.length; j++) {
+           row[headers[j]] = data[i][j];
+         }
+         jsonData.push(row);
+       }
+       
+       return ContentService.createTextOutput(JSON.stringify(jsonData)).setMimeType(ContentService.MimeType.JSON);
+     }
+
+  4. Click "Deploy" > "Manage deployments" > Edit (pencil icon) > New Version > Deploy.
   =========================================================================================
 */
 
 // PASTE YOUR WEB APP URL HERE ↓
-const GOOGLE_SCRIPT_URL: string = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLjpe3DLG5N8qpT8J89WyiF1WE9LIFlTk0mIW48KcpBonyZoNmlRvebqMLBlGUpyA2ll1TtdHxj-W2YKRhbk8XfWHT2WWtwpsKFihnDl1G_QkPIzlXHU5uyuTofyXcJD67VxCCwvOkHbofxbwLAk0BaZV0F2mUThq-MuoygWmuicDcdyhfVOI8dXhXAf2rpX9UXpuJtztcznwG3hqfZkkqrzc8ajRXYVesPo5qVyREztfF7o1qYVCe_QMbDEzvnhOOoeHXhn9El_7I518GM8ohHGEVPwXA&lib=MhwF0F2USy7jJGOzT1hkgAQDqya1mVk0K"; 
+const GOOGLE_SCRIPT_URL: string = "https://script.google.com/macros/s/AKfycbxVemjS0GzrxnSDPszrd5kBz83s4Ww2J0hiOHAH8m1puEDjCpUlOfPzmsiiHY_dfDw/exec"; 
 
 interface SubmissionData {
   studentName: string;
@@ -151,6 +167,8 @@ const SubmissionForm: React.FC = () => {
         formBody.append("points", points.toString());
         formBody.append("badge", badge);
         formBody.append("submissionId", submissionId);
+        // Send the detailed breakdown as a JSON string
+        formBody.append("rubricBreakdown", JSON.stringify(rubricScores));
 
         await fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
@@ -463,7 +481,7 @@ const FormGroup: React.FC<FormGroupProps> = ({ label, id, type, placeholder, req
   <div className="mb-5">
     <label htmlFor={id} className="block text-[#667eea] font-bold mb-2 text-lg">{label}</label>
     <input 
-      type={type} 
+      type="text" 
       id={id} 
       name={id} 
       required={required} 
