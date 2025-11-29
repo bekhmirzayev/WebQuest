@@ -130,12 +130,27 @@ const WebQuest: React.FC<WebQuestProps> = ({ onBack, activeSection, clearActiveS
             title: "Explore What Air Pollution Is",
             content: (
               <>
-                <p className="mb-2 text-gray-700"><strong>Watch this video:</strong></p>
+                <p className="mb-2 text-gray-700"><strong>Watch these videos:</strong></p>
                 <div className="flex flex-wrap gap-2 mb-4">
-                  <ResourceLink href="https://www.brainpop.com/science/ourfragileenvironment/airpollution">🎥 BrainPOP – Air Pollution</ResourceLink>
+                  <ResourceLink href="https://www.youtube.com/watch?v=Yjtgu2CxtEk">🎥 Air Pollution for Kids (Causes & Effects)</ResourceLink>
+                  <ResourceLink href="https://www.youtube.com/watch?v=KKyRRSFKkCc">🎥 What is Air Pollution (Science for Kids)</ResourceLink>
                 </div>
                 <p className="mb-2 text-sm italic text-gray-500">Tip: Check out the <strong>Reading Coach</strong> in the AI Assistant menu to practice reading more about this topic!</p>
-                <TaskBox><strong>Task:</strong> Write your definition of air pollution using <a href="https://padlet.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#667eea]">Padlet</a></TaskBox>
+                <TaskBox><strong>Task:</strong> Write your definition of air pollution in the Padlet below.</TaskBox>
+                
+                {/* Embedded Padlet */}
+                <div className="mt-4 padlet-embed" style={{border:'1px solid rgba(0,0,0,0.1)', borderRadius:'2px', boxSizing:'border-box', overflow:'hidden', position:'relative', width:'100%', background:'#F4F4F4'}}>
+                  <p style={{padding:0, margin:0}}>
+                    <iframe src="https://padlet.com/embed/ba9z5sjvw375ljsj" frameBorder="0" allow="camera;microphone;geolocation;display-capture;clipboard-write" style={{width:'100%', height:'608px', display:'block', padding:0, margin:0}}></iframe>
+                  </p>
+                  <div style={{display:'flex', alignItems:'center', justifyContent:'end', margin:0, height:'28px'}}>
+                    <a href="https://padlet.com?ref=embed" style={{display:'block', flexGrow:0, margin:0, border:'none', padding:0, textDecoration:'none'}} target="_blank" rel="noreferrer">
+                      <div style={{display:'flex', alignItems:'center'}}>
+                        <img src="https://padlet.net/embeds/made_with_padlet_2022.png" width="114" height="28" style={{padding:0, margin:0, background:'transparent', border:'none', boxShadow:'none'}} alt="Made with Padlet" />
+                      </div>
+                    </a>
+                  </div>
+                </div>
               </>
             )
           },
@@ -161,7 +176,7 @@ const WebQuest: React.FC<WebQuestProps> = ({ onBack, activeSection, clearActiveS
                 <p className="mb-2 text-gray-700"><strong>Explore these tools:</strong></p>
                 <div className="flex flex-wrap gap-2 mb-4">
                   <ResourceLink href="https://www.iqair.com/uzbekistan">🌡️ IQAir – Check Your City's Air Quality!</ResourceLink>
-                  <ResourceLink href="https://www.bbc.co.uk/bitesize/topics/zshp34j/articles/z8qsrj6">📚 BBC Bitesize – Pollution Effects</ResourceLink>
+                  <ResourceLink href="https://www.ducksters.com/science/environment/air_pollution.php">🦆 Ducksters – Air Pollution Facts</ResourceLink>
                 </div>
                 <TaskBox><strong>Task:</strong> Use <a href="https://wordwall.net" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#667eea]">Wordwall</a> or <a href="https://quizlet.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#667eea]">Quizlet</a> to create a matching game connecting pollutants to effects on humans and nature.</TaskBox>
               </>
